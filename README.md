@@ -46,39 +46,51 @@ Before we begin the actual code, we need to get our input data. My input will b
 
 Name it whatever you want. I'm calling mine "Othello.txt". Save it in the same directory as your Python program.
 
-### Formatting
+### Tools for Formatting
 Although we now have our data, before we can input it into an RNN, it needs to be formatted. It needs to be what Keras identifies as input, a certain configuration.
 
 ```python
-#Read the data, turn it into lower case
-data = open("Othello.txt").read().lower()
-#This get the set of characters used in the data and sorts them
-chars = sorted(list(set(data)))
-#Total number of characters used in the data
-totalChars = len(data)
-#Number of unique chars
-numberOfUniqueChars = len(chars)
+1    #Read the data, turn it into lower case
+2    data = open("Othello.txt").read().lower()
+3    #This get the set of characters used in the data and sorts them
+4    chars = sorted(list(set(data)))
+5    #Total number of characters used in the data
+6    totalChars = len(data)
+7    #Number of unique chars
+8    numberOfUniqueChars = len(chars)
 ```
 To implement the certain configuration we first need to create a couple of tools.
 
 **Line 2** opens the text file in which your data is stored, reads it and converts all the characters into lowercase. Lowercasing characters is a form of normalisation. If the RNN isn't trained properly, capital letters might start popping up in the middle of words, for example "scApes".
 
-**Line 5** creates a sorted list of characters used in the text. For example, for me it created the following:
+**Line 4** creates a sorted list of characters used in the text. For example, for me it created the following:
 ```python
 ['\n', ' ', "'", ',', '-', '.', ';', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'y']
 ```
-**Line 7** simply stores the total number of characters in the entire dataset into totalChars
+**Line 6** simply stores the total number of characters in the entire dataset into totalChars
 
-**Line 9** stores the number of unique characters or the length of chars
+**Line 8** stores the number of unique characters or the length of chars
 
 Now we need to create a dictionary of each character so it can be easily represented.
 ```python
-#This allows for characters to be represented by numbers
-CharsForids = {char:Id for Id, char in enumerate(chars)}
-
-#This is the opposite to the above
-idsForChars = {Id:char for Id, char in enumerate(chars)}
-
-#How many timesteps e.g how many characters we want to process in one go
-numberOfCharsToLearn = 100
+1    #This allows for characters to be represented by numbers
+2    CharsForids = {char:Id for Id, char in enumerate(chars)}
+3    #This is the opposite to the above
+4    idsForChars = {Id:char for Id, char in enumerate(chars)}
+5    #How many timesteps e.g how many characters we want to process in one go
+6    numberOfCharsToLearn = 100
 ```
+**Line 2** creates a dictionary where each character is a key. Each key character is represented by a number. For example entering this...
+```python
+CharsForids["o"]
+```
+ ...into the shell outputs..
+ ```python
+ 20
+ ```
+**Line 4** is simply the opposite of **Line 2**. Now the number is the key and the corresponding character is the value. 
+
+**Line 6** is basically how many characters we want one training example to contain or in other words the number of time-steps.
+
+### Formatting
+Our tools are ready! We can now format our data!
