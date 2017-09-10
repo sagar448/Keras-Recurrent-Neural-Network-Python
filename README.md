@@ -44,7 +44,6 @@ Don't worry if you don't fully understand what all of these do! I will expand m
 ### Input Data
 Before we begin the actual code, we need to get our input data. My input will be a section of a play from the playwright genius Shakespeare. I will be using a monologue from Othello.  
 
-I've saved it in a word document to make it accessible  for every OS. Here is the file --> "Othello"
-Open the file and copy the contents into a .txt file. Name it whatever you want. I'm calling mine "Othello.txt". Save it in the same directory as your Python program.
+Name it whatever you want. I'm calling mine "Othello.txt". Save it in the same directory as your Python program.
 
 Although we now have our data, before we can input it into an RNN, it needs to be formatted. It needs to be what Keras identifies as input, a certain configuration. 
