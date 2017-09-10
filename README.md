@@ -96,24 +96,89 @@ CharsForids["o"]
 ### Formatting
 Our tools are ready! We can now format our data!
 ```python
-#Input data
-charX = []
-#Output data
-y = []
-#Since our timestep sequence represetns a process for every 100 chars we omit
-#the first 100 chars so the loop runs a 100 less or there will be index out of
-#range
-counter = totalChars - numberOfCharsToLearn
-#This loops through all the characters in the data skipping the first 100
-for i in range(0, counter, 1):
-    #This one goes from 0-100 so it gets 100 values starting from 0 and stops
-    #just before the 100th value
-    theInputChars = data[i:i+numberOfCharsToLearn]
-    #With no ':' you start with 0, and so you get the actual 100th value
-    #Essentially, the output Chars is the next char in line for those 100 chars in charX
-    theOutputChars = data[i + numberOfCharsToLearn]
-    #Appends every 100 chars ids as a list into charX
-    charX.append([CharsForids[char] for char in theInputChars])
-    #For every 100 values there is one y value which is the output
-    y.append(CharsForids[theOutputChars])
+1     #Input data
+2     charX = []
+3     #Output data
+4     y = []
+5     #Since our timestep sequence represetns a process for every 100 chars we omit
+6     #the first 100 chars so the loop runs a 100 less or there will be index out of
+7     #range
+8     counter = totalChars - numberOfCharsToLearn
+9     #This loops through all the characters in the data skipping the first 100
+10    for i in range(0, counter, 1):
+11        #This one goes from 0-100 so it gets 100 values starting from 0 and stops
+12        #just before the 100th value
+13        theInputChars = data[i:i+numberOfCharsToLearn]
+14        #With no ':' you start with 0, and so you get the actual 100th value
+15        #Essentially, the output Chars is the next char in line for those 100 chars in charX
+16        theOutputChars = data[i + numberOfCharsToLearn]
+17        #Appends every 100 chars ids as a list into charX
+18        charX.append([CharsForids[char] for char in theInputChars])
+19        #For every 100 values there is one y value which is the output
+20        y.append(CharsForids[theOutputChars])
 ```
+**Line 2, 4** are empty lists for storing the formatted data as input, charX and output, y
+
+**Line 8** creates a counter for our for loop. We run our loop for a 100 (numberOfCharsToLearn) less as we will be referencing the last 100 as the output chars or the consecutive chars to the input
+
+**Line 13** theInputChars stores the first 100 chars and then as the loop iterates, it takes the next 100 and so on...
+
+**Line 16** theOutputChars stores only 1 char, the next char after the last char in theInputChars
+
+**Line 18** the charX list is appended to with 100 integers. Each of those integers are IDs of the chars in theInputChars
+
+**Line20** appends an integer ID every iteration to the y list corresponding to the single char in theOutputChars
+
+Are we now ready to put our data through the RNN? Not quite! We have the data represented correctly but still not in the right format
+```python
+1    #Len(charX) represents how many of those time steps we have
+2    #The numberOfCharsToLearn is how many character we process
+3    #Our features are set to 1 because in the output we are only predicting 1 char
+4    X = np.reshape(charX, (len(charX), numberOfCharsToLearn, 1))
+5    #This is done for normalization
+6    X = X/float(numberOfUniqueChars)
+7    #This sets it up for us so we can have a categorical(#feature) output format
+8    y = np_utils.to_categorical(y)
+```
+**Line 4** shapes the input array into [samples, time-steps, features], required for Keras
+
+**Line 6** this is a form of normalisation
+
+**Line 8** this converts y into a one-hot vector. A one-hot vector is an array of 0s and 1s. The 1 only occurs at the position where the ID is true. For example, say we have 5 unique character IDs, [0, 1, 2, 3, 4]. Then say we have 1 single data output equal to 1, y = ([[0, 1, 0, 0, 0]]). Notice how the 1 only occurs at the position of 1. Now imagine exactly this, but for 100 different examples with a length of numberOfUniqueChars
+
+### Building the RNN model
+Thats data formatting and representation part finished!
+Yes! We can now start building our RNN model!
+```python
+model = Sequential()
+#Since we know the shape of our Data we can input the timestep and feature data
+#The number of timestep sequence are dealt with in the fit function
+model.add(LSTM(256, input_shape=(X.shape[1], X.shape[2])))
+model.add(Dropout(0.2))
+#number of features on the output
+model.add(Dense(y.shape[1], activation='softmax'))
+model.compile(loss='categorical_crossentropy', optimizer='adam')
+model.fit(X, y, epochs=5, batch_size=128)
+model.save_weights("Othello.hdf5")
+#model.load_weights("Othello.hdf5")
+```
+**Line 1** this uses the Sequential() import I mentioned earlier.
+This essentially initialises the network. It creates an empty "template model".
+
+**Line 6** we now add our first layer to the empty "template model". This is the LSTM layer which contains 256 LSTM units, with the input shape being input_shape=(numberOfCharsToLearn, features). It was written that way to avoid any silly mistakes! Although the X array is of 3 dimensions we omit the "samples dimension" in the LSTM layer because it is accounted for automatically later on.
+```
+Note: Omitting does not mean the "samples dimension" is not considered!
+```
+**Line 7** this as explained in the imports section "drops-out" a neuron. The 0.2 represents a percentage, it means 20% of the neurons will be "dropped" or set to 0
+
+**Line 9*** the layer acts as an output layer. It performs the activation of the dot of the weights and the inputs plus the bias
+```
+Note: RNNs do not actually utilise the activation function in its recurrent components to minimise the vanishing gradient problem!
+```
+**Line 10** this is the configuration settings. Our loss function is the "categorical_crossentropy" and the optimizer is "Adam"
+
+**Line 11** runs the training algorithm. The epochs are the number of times we want each of our batches to be evaluated. I have set it to 5 for this tutorial but generally 20 or higher epochs are favourable. The batch size is the how many of our input data set we want evaluated at once. In this case we input 128 of examples into the training algorithm then the next 128 and so on..
+
+**Line 12**, finally once the training is done, we can save the weights
+
+**Line 13** this is commented out initially to prevent errors but once we have saved our weights we can comment out **Line 11, 12** and uncomment **line 13** to load previously trained weights
