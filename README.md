@@ -6,9 +6,9 @@
 
 Lets get straight into it, this tutorial will walk you through the steps to implement Keras with Python and thus to come up with a generative model.
 
-So what exactly is Keras? Let's put it this way, it makes programming machine learning algorithms much much easier. It simply runs atop Tensorflow/Theano (check other post for Tensorflow/Theano), cutting down on the coding and increasing efficiency. In more technical terms, Keras is a high-level neural network API written in Python. 
+So what exactly is Keras? Let's put it this way, it makes programming machine learning algorithms much much easier. It simply runs atop Tensorflow/Theano, cutting down on the coding and increasing efficiency. In more technical terms, Keras is a high-level neural network API written in Python. 
 
-Let's get started, I am assuming you all have Tensorflow and Keras installed. (Check my other post on how to install Keras/Tensorflow)
+Let's get started, I am assuming you all have Tensorflow and Keras installed.
 
 ```
 Note: It's very important you have enough knowledge about recurrent neural networks before beginning 
@@ -42,7 +42,7 @@ We start of by importing essential libraries...
 Don't worry if you don't fully understand what all of these do! I will expand more on these as we go along.
 
 ### Input Data
-Before we begin the actual code, we need to get our input data. My input will be a section of a play from the playwright genius Shakespeare. I will be using a monologue from Othello.  
+Before we begin the actual code, we need to get our input data. My input will be a section of a play from the playwright genius Shakespeare. I will be using a monologue from Othello. You can get the text file from this repository
 
 Name it whatever you want. I'm calling mine "Othello.txt". Save it in the same directory as your Python program.
 
