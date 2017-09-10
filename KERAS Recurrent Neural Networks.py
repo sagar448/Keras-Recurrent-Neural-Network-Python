@@ -1,7 +1,3 @@
-import sys
-sys.path.append("/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages")
-sys.path.append("/usr/local/lib/python3.6/site-packages")
-#You can remove the above two lines if it is not required. 
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense
@@ -10,14 +6,11 @@ from keras.layers import LSTM
 from keras.utils import np_utils
 
 #Read the data, turn it into lower case
-data = open("PathTOTextFileHere.txt").read().lower()
-
+data = open("Othello.txt").read().lower()
 #This get the set of characters used in the data and sorts them
 chars = sorted(list(set(data)))
-
 #Total number of characters used in the data
 totalChars = len(data)
-
 #Number of unique chars
 numberOfUniqueChars = len(chars)
 
@@ -63,17 +56,20 @@ X = X/float(numberOfUniqueChars)
 
 #This sets it up for us so we can have a categorical(#feature) output format
 y = np_utils.to_categorical(y)
+print(y)
+
+
 model = Sequential()
 #Since we know the shape of our Data we can input the timestep and feature data
 #The number of timestep sequence are dealt with in the fit function
-model.add(LSTM(512, input_shape=(X.shape[1], X.shape[2])))
+model.add(LSTM(256, input_shape=(X.shape[1], X.shape[2])))
 model.add(Dropout(0.2))
 #number of features on the output
 model.add(Dense(y.shape[1], activation='softmax'))
 model.compile(loss='categorical_crossentropy', optimizer='adam')
-#model.fit(X, y, epochs=20, batch_size=128)
-#model.save_weights("bigSeanParadiseAttempt.hdf5")
-model.load_weights("bigSeanParadiseAttempt.hdf5")
+model.fit(X, y, epochs=5, batch_size=128)
+model.save_weights("Othello.hdf5")
+#model.load_weights("Othello.hdf5")
 
 randomVal = np.random.randint(0, len(charX)-1)
 randomStart = charX[randomVal]
