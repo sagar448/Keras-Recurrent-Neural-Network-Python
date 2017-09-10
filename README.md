@@ -60,10 +60,25 @@ totalChars = len(data)
 numberOfUniqueChars = len(chars)
 ```
 To implement the certain configuration we first need to create a couple of tools.
-**Line 2**opens the text file in which your data is stored, reads it and converts all the characters into lowercase. Lowercasing characters is a form of normalisation. If the RNN isn't trained properly, capital letters might start popping up in the middle of words, for example "scApes".
+
+**Line 2** opens the text file in which your data is stored, reads it and converts all the characters into lowercase. Lowercasing characters is a form of normalisation. If the RNN isn't trained properly, capital letters might start popping up in the middle of words, for example "scApes".
+
 **Line 5** creates a sorted list of characters used in the text. For example, for me it created the following:
 ```python
 ['\n', ' ', "'", ',', '-', '.', ';', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'y']
 ```
-**Line 7** simply stores the total number of characters in the entire dataset into totalChars.
+**Line 7** simply stores the total number of characters in the entire dataset into totalChars
+
 **Line 9** stores the number of unique characters or the length of chars
+
+Now we need to create a dictionary of each character so it can be easily represented.
+```python
+#This allows for characters to be represented by numbers
+CharsForids = {char:Id for Id, char in enumerate(chars)}
+
+#This is the opposite to the above
+idsForChars = {Id:char for Id, char in enumerate(chars)}
+
+#How many timesteps e.g how many characters we want to process in one go
+numberOfCharsToLearn = 100
+```
