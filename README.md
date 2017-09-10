@@ -13,6 +13,10 @@ Let's get started, I am assuming you all have Tensorflow and Keras installed.
 ```
 Note: It's very important you have enough knowledge about recurrent neural networks before beginning 
 this tutorial. Please refer to these links for further info! 
+
+http://colah.github.io/posts/2015-08-Understanding-LSTMs/
+https://medium.com/@shiyan/understanding-lstm-and-its-diagrams-37e2f46f1714
+http://nikhilbuduma.com/2015/01/11/a-deep-dive-into-recurrent-neural-networks/
 ```
 ## Implementation
 
@@ -171,7 +175,7 @@ Note: Omitting does not mean the "samples dimension" is not considered!
 ```
 **Line 5** this as explained in the imports section "drops-out" a neuron. The 0.2 represents a percentage, it means 20% of the neurons will be "dropped" or set to 0
 
-**Line 7*** the layer acts as an output layer. It performs the activation of the dot of the weights and the inputs plus the bias
+**Line 7** the layer acts as an output layer. It performs the activation of the dot of the weights and the inputs plus the bias
 ```
 Note: RNNs do not actually utilise the activation function in its recurrent components to minimise the vanishing gradient problem!
 ```
@@ -182,3 +186,58 @@ Note: RNNs do not actually utilise the activation function in its recurrent comp
 **Line 10**, finally once the training is done, we can save the weights
 
 **Line 11** this is commented out initially to prevent errors but once we have saved our weights we can comment out **Line 9, 10** and uncomment **line 11** to load previously trained weights
+
+```
+Note: You can change the epoch number and batch size to whatever you want, I have kept it low for this tutorial
+```
+### Training
+During training you might see something like this in the Python shell
+```python
+Epoch 1/5
+
+ 128/1760 [=>............................] - ETA: 43s - loss: 3.3984
+ 256/1760 [===>..........................] - ETA: 27s - loss: 3.3905
+ 384/1760 [=====>........................] - ETA: 21s - loss: 3.3835
+ 512/1760 [=======>......................] - ETA: 18s - loss: 3.3749
+ 640/1760 [=========>....................] - ETA: 15s - loss: 3.3615
+ 768/1760 [============>.................] - ETA: 13s - loss: 3.3425
+ 896/1760 [==============>...............] - ETA: 11s - loss: 3.3174
+1024/1760 [================>.............] - ETA: 9s - loss: 3.3563 
+```
+Once it's done computing all the epoch it will straightaway run the code for generating new text
+### Generating New Text
+Let's look at the code that allows us to generate new text!
+```python
+1     randomVal = np.random.randint(0, len(charX)-1)
+2     randomStart = charX[randomVal]
+3     for i in range(500):
+4         x = np.reshape(randomStart, (1, len(randomStart), 1))
+5         x = x/float(numberOfUniqueChars)
+6         pred = model.predict(x)
+7         index = np.argmax(pred)
+8         randomStart.append(index)
+9         randomStart = randomStart[1: len(randomStart)]
+10     print("".join([idsForChars[value] for value in randomStart]))
+```
+**Line 1** so this basically generates a random value from 0 to anything between the length of the input data minus 1
+
+**Line 2** this provides us with our starting sentence in integer form
+
+**Line 3** Now the 500 is not absolute you can change it but I would like to generate 500 chars
+
+**Line 4** this generates a single data example which we can put through to predict the next char
+
+**Line 5,6** we normalise the single example and then put it through the prediction model
+
+**Line 7** This gives us back the index of the next predicted character after that sentence
+
+**Line 8,9** appending our predicted character to our starting sentence gives us 101 chars. We can then take the next 100 char by omitting the first one
+
+**Line 10** loops until it's reached 500 and then prints out the generated text by converting the integers back into chars
+
+### Conclusion and Fixes
+So that was all for the generative model.
+If for some reason your model prints out blanks or gibberish then you need to train it for longer. Try playing with the model configuration until you get a real result. Keras tends to overfit small datasets, anyhting below 100Kb will produce gibberish. You need to have a dataset of atleast 100Kb or bigger for any good result!
+
+If you have any questions send me a message and I will try my best to reply!!!
+Thanks for reading!
