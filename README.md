@@ -65,7 +65,8 @@ To implement the certain configuration we first need to create a couple of to
 
 **Line 4** creates a sorted list of characters used in the text. For example, for me it created the following:
 ```python
-['\n', ' ', "'", ',', '-', '.', ';', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'y']
+['\n', ' ', "'", ',', '-', '.', ';', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 
+'i', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'y']
 ```
 **Line 6** simply stores the total number of characters in the entire dataset into totalChars
 
@@ -94,3 +95,25 @@ CharsForids["o"]
 
 ### Formatting
 Our tools are ready! We can now format our data!
+```python
+#Input data
+charX = []
+#Output data
+y = []
+#Since our timestep sequence represetns a process for every 100 chars we omit
+#the first 100 chars so the loop runs a 100 less or there will be index out of
+#range
+counter = totalChars - numberOfCharsToLearn
+#This loops through all the characters in the data skipping the first 100
+for i in range(0, counter, 1):
+    #This one goes from 0-100 so it gets 100 values starting from 0 and stops
+    #just before the 100th value
+    theInputChars = data[i:i+numberOfCharsToLearn]
+    #With no ':' you start with 0, and so you get the actual 100th value
+    #Essentially, the output Chars is the next char in line for those 100 chars in charX
+    theOutputChars = data[i + numberOfCharsToLearn]
+    #Appends every 100 chars ids as a list into charX
+    charX.append([CharsForids[char] for char in theInputChars])
+    #For every 100 values there is one y value which is the output
+    y.append(CharsForids[theOutputChars])
+```
