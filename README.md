@@ -127,7 +127,7 @@ Our tools are ready! We can now format our data!
 
 **Line 18** the charX list is appended to with 100 integers. Each of those integers are IDs of the chars in theInputChars
 
-**Line20** appends an integer ID every iteration to the y list corresponding to the single char in theOutputChars
+**Line 20** appends an integer ID every iteration to the y list corresponding to the single char in theOutputChars
 
 Are we now ready to put our data through the RNN? Not quite! We have the data represented correctly but still not in the right format
 ```python
@@ -150,35 +150,35 @@ Are we now ready to put our data through the RNN? Not quite! We have the data re
 Thats data formatting and representation part finished!
 Yes! We can now start building our RNN model!
 ```python
-model = Sequential()
-#Since we know the shape of our Data we can input the timestep and feature data
-#The number of timestep sequence are dealt with in the fit function
-model.add(LSTM(256, input_shape=(X.shape[1], X.shape[2])))
-model.add(Dropout(0.2))
-#number of features on the output
-model.add(Dense(y.shape[1], activation='softmax'))
-model.compile(loss='categorical_crossentropy', optimizer='adam')
-model.fit(X, y, epochs=5, batch_size=128)
-model.save_weights("Othello.hdf5")
-#model.load_weights("Othello.hdf5")
+1     model = Sequential()
+2     #Since we know the shape of our Data we can input the timestep and feature data
+3     #The number of timestep sequence are dealt with in the fit function
+4     model.add(LSTM(256, input_shape=(X.shape[1], X.shape[2])))
+5     model.add(Dropout(0.2))
+6     #number of features on the output
+7     model.add(Dense(y.shape[1], activation='softmax'))
+8     model.compile(loss='categorical_crossentropy', optimizer='adam')
+9     model.fit(X, y, epochs=5, batch_size=128)
+10    model.save_weights("Othello.hdf5")
+11    #model.load_weights("Othello.hdf5")
 ```
 **Line 1** this uses the Sequential() import I mentioned earlier.
 This essentially initialises the network. It creates an empty "template model".
 
-**Line 6** we now add our first layer to the empty "template model". This is the LSTM layer which contains 256 LSTM units, with the input shape being input_shape=(numberOfCharsToLearn, features). It was written that way to avoid any silly mistakes! Although the X array is of 3 dimensions we omit the "samples dimension" in the LSTM layer because it is accounted for automatically later on.
+**Line 4** we now add our first layer to the empty "template model". This is the LSTM layer which contains 256 LSTM units, with the input shape being input_shape=(numberOfCharsToLearn, features). It was written that way to avoid any silly mistakes! Although the X array is of 3 dimensions we omit the "samples dimension" in the LSTM layer because it is accounted for automatically later on.
 ```
 Note: Omitting does not mean the "samples dimension" is not considered!
 ```
-**Line 7** this as explained in the imports section "drops-out" a neuron. The 0.2 represents a percentage, it means 20% of the neurons will be "dropped" or set to 0
+**Line 5** this as explained in the imports section "drops-out" a neuron. The 0.2 represents a percentage, it means 20% of the neurons will be "dropped" or set to 0
 
-**Line 9*** the layer acts as an output layer. It performs the activation of the dot of the weights and the inputs plus the bias
+**Line 7*** the layer acts as an output layer. It performs the activation of the dot of the weights and the inputs plus the bias
 ```
 Note: RNNs do not actually utilise the activation function in its recurrent components to minimise the vanishing gradient problem!
 ```
-**Line 10** this is the configuration settings. Our loss function is the "categorical_crossentropy" and the optimizer is "Adam"
+**Line 8** this is the configuration settings. Our loss function is the "categorical_crossentropy" and the optimizer is "Adam"
 
-**Line 11** runs the training algorithm. The epochs are the number of times we want each of our batches to be evaluated. I have set it to 5 for this tutorial but generally 20 or higher epochs are favourable. The batch size is the how many of our input data set we want evaluated at once. In this case we input 128 of examples into the training algorithm then the next 128 and so on..
+**Line 9** runs the training algorithm. The epochs are the number of times we want each of our batches to be evaluated. I have set it to 5 for this tutorial but generally 20 or higher epochs are favourable. The batch size is the how many of our input data set we want evaluated at once. In this case we input 128 of examples into the training algorithm then the next 128 and so on..
 
-**Line 12**, finally once the training is done, we can save the weights
+**Line 10**, finally once the training is done, we can save the weights
 
-**Line 13** this is commented out initially to prevent errors but once we have saved our weights we can comment out **Line 11, 12** and uncomment **line 13** to load previously trained weights
+**Line 11** this is commented out initially to prevent errors but once we have saved our weights we can comment out **Line 9, 10** and uncomment **line 11** to load previously trained weights
