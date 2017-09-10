@@ -46,4 +46,24 @@ Before we begin the actual code, we need to get our input data. My input will b
 
 Name it whatever you want. I'm calling mine "Othello.txt". Save it in the same directory as your Python program.
 
-Although we now have our data, before we can input it into an RNN, it needs to be formatted. It needs to be what Keras identifies as input, a certain configuration. 
+### Formatting
+Although we now have our data, before we can input it into an RNN, it needs to be formatted. It needs to be what Keras identifies as input, a certain configuration.
+
+```python
+#Read the data, turn it into lower case
+data = open("Othello.txt").read().lower()
+#This get the set of characters used in the data and sorts them
+chars = sorted(list(set(data)))
+#Total number of characters used in the data
+totalChars = len(data)
+#Number of unique chars
+numberOfUniqueChars = len(chars)
+```
+To implement the certain configuration we first need to create a couple of tools.
+**Line 2**opens the text file in which your data is stored, reads it and converts all the characters into lowercase. Lowercasing characters is a form of normalisation. If the RNN isn't trained properly, capital letters might start popping up in the middle of words, for example "scApes".
+**Line 5** creates a sorted list of characters used in the text. For example, for me it created the following:
+```python
+['\n', ' ', "'", ',', '-', '.', ';', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'y']
+```
+**Line 7** simply stores the total number of characters in the entire dataset into totalChars.
+**Line 9** stores the number of unique characters or the length of chars
